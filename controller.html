@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Robot Control Page</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>
+      <h1>Robot Control Page</h1>
+    </header>
+    <main>
+      <div id="button-container">
+        <form action="controller.php" method="POST" onsubmit="sendCommand(event)">
+          <button type="submit" name="command" value="forward"><span>Forward</span></button>
+          <button type="submit" name="command" value="left"><span>Left</span></button>
+          <button type="submit" name="command" value="stop"><span>Stop</span></button>
+          <button type="submit" name="command" value="right"><span>Right</span></button>
+          <button type="submit" name="command" value="backward"><span>Backward</span></button>
+        </form>
+      </div>
+      <div id="log-container">
+        <h2>Last Command: <span id="last-command"></span></h2>
+      </div>
+    </main>
+    <footer>
+      <p>Ahmad yahya almathami</p>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
