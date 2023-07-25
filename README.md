@@ -25,10 +25,14 @@ CREATE TABLE `commands` (
  ```
 
 ---
+## Path Drawing Feature
+In the "path-drawing" branch, a canvas has been added to the page to show the path taken by the robot. The canvas can be toggled on and off using a checkbox on the page.
 
-### In this update of the webpage, i added a canvas that can show the path of the robot
+
 ### these images displays the page with the path
 ![image](https://github.com/oAmadu/Robot-Control/assets/90242708/8622315f-35c7-4259-b9d1-ed187525f5c0)
 ### as shown in the picture, there's a checkbox that shows/hides the canvas
+
+
 
 
