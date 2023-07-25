@@ -12,6 +12,7 @@ note: The updated README information for the new version of the website is locat
 
 ### while this image shows an example of the database that has been connected to the webpage.
 ![image](https://github.com/oAmadu/Robot-Control/assets/90242708/570aa853-8cbf-42cc-9598-3936c98a8b3d)
+data are stored through: controller.php and script.js
 
 
 The SQL code required to build a table for storing the commands is as follows.
@@ -36,7 +37,6 @@ In the "path-drawing" branch, a canvas has been added to the page to show the pa
 
 ### and here's a picture of the table paths in the database where the paths are stored
 ![image](https://github.com/oAmadu/Robot-Control/assets/90242708/5393b287-4966-4cb2-9bee-2eb877a33523)
-
-https://github.com/oAmadu/Robot-Control/blob/7da2c3b116778873f37ddaf60edad7cfd5d3a7dd/store_path.php
+data are stored through: store_path.php and script.js
 
 
