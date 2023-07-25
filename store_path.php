@@ -1,16 +1,16 @@
-<?php 
-// Get the command 
-$command = $_POST["command"];
+<?php
+// Get the path data
+$path = $_POST["path"];
 
-// Connect to the db
+// Connect to the database
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "robot_navigation_system";
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Insert the data into the db
-$sql = "INSERT INTO commands (command, timestamp) VALUES ('$command', NOW())";
+// Insert the data into the database
+$sql = "INSERT INTO paths (path, timestamp) VALUES ('$path', NOW())";
 $conn->query($sql);
 
 // Close the database connection

@@ -1,83 +1,140 @@
-// Get the canvas element and context
-const canvas = document.getElementById("path-canvas");
-const ctx = canvas.getContext("2d");
+// Define variables for storing the path
+var path = [];
+var canvas = null;
+var ctx = null;
 
-// Define the starting point of the path
-const startPoint = {x: canvas.width/2, y: canvas.height/2};
-const path = [startPoint];
+// Get the canvas 
+canvas = document.getElementById("path-canvas");
+ctx = canvas.getContext("2d");
+const toggleCanvas = document.getElementById("toggle-canvas");
+const pathCanvas = document.getElementById("path-canvas");
 
-// Define the direction offsets
-const directions = {
-  "forward": {x: 0, y: -10},
-  "backward": {x: 0, y: 10},
-  "left": {x: -10, y: 0},
-  "right": {x: 10, y: 0}
-};
+toggleCanvas.addEventListener("change", () => {
+  if (toggleCanvas.checked) {
+    pathCanvas.style.display = "block";
+  } else {
+    pathCanvas.style.display = "none";
+  }
+});
 
-// Draw the path on the canvas
+// send drawn path
+function sendPath() {
+  console.log("Sending path: " + JSON.stringify(path));
+  const xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log("Path stored in database.");
+    }
+  };
+  xmlhttp.open("POST", "store_path.php", true);
+  xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xmlhttp.send("path=" + JSON.stringify(path));
+}
+
+// Define the starting point 
+var startPoint = {x: canvas.width/2, y: canvas.height/2};
+path.push(startPoint);
+
+// Clear the canvas
+function clearCanvas() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+// Drawing the path 
 function drawPath() {
+  clearCanvas();
   ctx.beginPath();
   ctx.moveTo(startPoint.x, startPoint.y);
-  path.forEach(point => {
-    ctx.lineTo(point.x, point.y);
-  });
+  for (var i = 1; i < path.length; i++) {
+    ctx.lineTo(path[i].x, path[i].y);
+  }
   ctx.strokeStyle = "#fff";
   ctx.lineWidth = 2;
   ctx.stroke();
 }
 
-// Add the command to the path variable
+// Add the command to the path
 function addToPath(command) {
-  const offset = directions[command];
-  if (!offset) {
-    return;
+  var x = startPoint.x;
+  var y = startPoint.y;
+
+
+  switch (command) {
+    case "forward":
+      y -= 10;
+      break;
+    case "backward":
+      y += 10;
+      break;
+    case "left":
+      x -= 10;
+      break;
+    case "right":
+      x += 10;
+      break;
+    default:
+      return;
   }
-  const x = startPoint.x + offset.x;
-  const y = startPoint.y + offset.y;
+
+   //Draw the line of the path
+  ctx.beginPath();
+  ctx.moveTo(startPoint.x, startPoint.y);
+  ctx.lineTo(x, y);
+  ctx.strokeStyle = "#fff";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+
   path.push({x: x, y: y});
-  startPoint.x = x;
-  startPoint.y = y;
+
+
+  startPoint = {x: x, y: y};
 }
 
-// Send the command to the server
+// Send the command to the db and add it to the path
 function sendCommand(event) {
+  console.log("Sending command...");
   event.preventDefault();
-  const command = event.submitter.value;
-  const xmlhttp = new XMLHttpRequest();
+  var command = event.submitter.value;
+  console.log("Command: " + command); // for debugging
+  var xmlhttp = new XMLHttpRequest();
   xmlhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      // Update the last command displayed on the page
+      console.log("Response: " + this.responseText); // for debugging
       document.getElementById("last-command").innerHTML = command;
-      // Add the command to the path and draw it on the canvas
       addToPath(command);
-      drawPath();
     }
   };
   xmlhttp.open("POST", "controller.php", true);
   xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   xmlhttp.send("command=" + command);
+
+  // Send the path
+  sendPath();
 }
 
-// Toggle the canvas visibility
-const toggleCanvas = document.getElementById("toggle-canvas");
-toggleCanvas.addEventListener("change", () => {
-  const pathCanvas = document.getElementById("path-canvas");
-  pathCanvas.style.display = toggleCanvas.checked ? "block" : "none";
-});
 
-// Listen for double clicks on the canvas
 canvas.addEventListener("dblclick", function() {
-  // Get the last two points on the path
-  const lastPoint = path[path.length-1];
-  const secondLastPoint = path[path.length-2];
-  // Calculate the new coordinates for the two new points
-  const distance = 10;
-  const x1 = lastPoint.x + directions["left"].x;
-  const y1 = lastPoint.y + directions["up"].y;
-  const x2 = lastPoint.x + directions["right"].x;
-  const y2 = lastPoint.y + directions["up"].y;
-  // Add the new points to the path variable and draw them on the canvas
+  var lastPoint = path[path.length-1];
+  var secondLastPoint = path[path.length-2];
+
+  var dx = lastPoint.x - secondLastPoint.x;
+  var dy = lastPoint.y - secondLastPoint.y;
+
+  var angle = Math.atan2(dy, dx);
+
+
+  var distance = 10;
+  var x1 = lastPoint.x + distance * Math.cos(angle - Math.PI/4);
+  var y1 = lastPoint.y + distance * Math.sin(angle - Math.PI/4);
+  var x2 = lastPoint.x + distance * Math.cos(angle + Math.PI/4);
+  var y2 = lastPoint.y + distance * Math.sin(angle + Math.PI/4);
+
+
   path.push({x: x1, y: y1});
   path.push({x: x2, y: y2});
+
+  // Draw the updated path on the canvas
   drawPath();
+  
 });
