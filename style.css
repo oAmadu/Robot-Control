@@ -24,8 +24,15 @@ main {
   height: calc(100vh - 100px);
 }
 
+#container {
+  display: flex;
+  width: 800px;
+  height: 400px;
+}
+
 #button-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
@@ -117,7 +124,7 @@ button.arrow.left:before {
   transform: rotate(90deg);
 }
 
-button[value="stop"] {
+button[value="stop"]{
   background-color: #f00;
   position: absolute;
   top: calc(50% - 40px);
@@ -152,6 +159,26 @@ button[value="backward"] {
   left: calc(50% - 40px);
   z-index: 1;
 }
+
+#path-container {
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  width: 400px;
+  height: 400px;
+}
+
+
+canvas#path-canvas {
+  border: 1px solid #fff;
+  width: 600px;
+  height: 400px;
+  position: absolute;
+  top: 50%;
+  right: 50px;
+  transform: translateY(-50%);
+}
+
 
 #log-container {
   margin-top: 50px;
